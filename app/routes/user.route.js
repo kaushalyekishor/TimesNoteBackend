@@ -5,7 +5,12 @@ var userController = require('../controller/user.controller')
 router.use(expressValidator());
 
 router.post('/signUp', userController.userCreate);
-router.get('/forgetPassword/', userController.passwordReset);
-//router.get('/verifyAccount/:token', userController.confirmAccount);
+router.get('/verifyAccount/:token', userController.confirmAccount);
+router.get('/Login', userController.login);
+router.get('/forgetPassword', userController.passwordReset);
+router.get('/getToken', userController.getToken);
+router.post('/updatePassword/:token', userController.updatePassword);
 
-module.exports = router
+router.post('/verify',userController.verifyAccount);
+
+module.exports = router;
