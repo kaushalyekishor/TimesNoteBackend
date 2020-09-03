@@ -1,4 +1,5 @@
 var userService = require('../services/user.service')
+var userServicePromise = require('../services/user.service.Promise');
 
 exports.userCreate = (req, res) => {
     try {
@@ -13,7 +14,9 @@ exports.userCreate = (req, res) => {
         if (errors) {
             return res.status(400).send(errors);
         } else {
-            userService.userCreate(req, res);
+            //userService.userCreate(req, res);
+            console.log("controller");
+            userServicePromise.createUser(req, res);
         }
     } catch (error) {
         res.send(error)

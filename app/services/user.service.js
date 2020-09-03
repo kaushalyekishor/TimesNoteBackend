@@ -53,7 +53,7 @@ exports.userCreate = async function (req, res) {
                 });
             }
             else {
-                let subject = 'Account verification token';
+                let subject = 'Account verification email';
                 //text = token.token
                 let text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + 'localhost:4200' + '\/verify\/' + token.token + '\n';
                 //eventEmitter.emit('sendEmail', subject, user, text);
@@ -106,7 +106,8 @@ exports.passwordReset = async function (req, res) {
                 }
                 else {
                     let subject = 'Times Note, Please reset your password'
-                    text = token.token
+                    //text = token.token
+                    let text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + 'localhost:4200' + '\/updatePassword\/' + token.token + '\n';
                     eventEmitter.emit('sendEmail', subject, userExist, text)
                 }
             })
@@ -151,7 +152,7 @@ exports.login = async function (req, res) {
                 let token = jwt.sign(payload, process.env.SECRET_KEY, {
                     expiresIn: 60000
                 })
-                
+
                 res.json({ user_id: userExist._id, token: token });
             }
             else {
@@ -177,8 +178,9 @@ exports.updatePassword = async (req, res) => {
     /**
      * find token object present in Database
      */
+    console.log("test");
     var userToken = await Token.findOne({
-        token: req.params.token
+        token: req.body.token
     })
     /**
      * if user token Exist then find user Exist or Not through user id
@@ -187,6 +189,7 @@ exports.updatePassword = async (req, res) => {
         var user = await User.findOne({
             _id: userToken._userId
         })
+        console.log(user);
         if (user) {
             await bcrypt.hash(req.body.password, bcrypt.genSaltSync(10), null, async function (err, hash) {
                 if (err) {
@@ -196,13 +199,14 @@ exports.updatePassword = async (req, res) => {
                     user.password = hash
                 }
             })
+            console.log(user.password);
             user.save(function (err) {
                 if (err) {
-                    return res.status(500).send({
+                     res.status(500).send({
                         message: 'something went wrong'
                     })
                 } else {
-                    return res.status(200).send({
+                     res.status(200).send({
                         message: 'password reset successfully '
                     })
                 }
